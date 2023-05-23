@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  name           String
+  email          String          @unique
+  passwordHash   String
+  avatarUrl      String?
+  comments       Comment[]
+  reportedIssues Issue[]
+  assignedIssues IssueAssignee[]
+  projects       UserProject[]
+  leadProjects   Project[]
+}
+
+model Project {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
+  url         String          @unique
+  description String
+  category    ProjectCategory
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  users       UserProject[]
+  issues      Issue[]
+  lead        User            @relation(fields: [leadId], references: [id])
+  leadId      Int
+}
+
+model UserProject {
+  project   Project @relation(fields: [projectId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+  projectId Int
+  userId    Int
+
+  @@id([userId, projectId])
+}
+
+model Issue {
+  id            Int             @id @default(autoincrement())
+  type          IssueType
+  summary       String
+  description   String
+  priority      IssuePriority
+  status        IssueStatus
+  estimate      Int?
+  timeSpent     Int?
+  timeRemaining Int?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  reporter      User            @relation(fields: [reporterId], references: [id])
+  reporterId    Int
+  assignees     IssueAssignee[]
+  comments      Comment[]
+  project       Project         @relation(fields: [projectId], references: [id])
+  projectId     Int
+}
+
+model IssueAssignee {
+  issue      Issue @relation(fields: [issueId], references: [id])
+  assignee   User  @relation(fields: [assigneeId], references: [id])
+  issueId    Int
+  assigneeId Int
+
+  @@id([issueId, assigneeId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  issue     Issue    @relation(fields: [issueId], references: [id])
+  issueId   Int
+}
+
+enum ProjectCategory {
+  software
+  marketing
+  business
+}
+
+enum IssueType {
+  bug
+  story
+  task
+}
+
+enum IssuePriority {
+  highest
+  high
+  medium
+  low
+  lowest
+}
+
+enum IssueStatus {
+  backlog
+  selected
+  inProgress
+  done
+}
