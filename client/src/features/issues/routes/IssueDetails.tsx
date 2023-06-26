@@ -6,7 +6,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router";
 import { TextEditor } from "../components/TextEditor";
 import { IssuePriority, IssueStatus, IssueType } from "../constants";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef, useState } from "react";
 import { useGetIssue, useUpdateIssue } from "../hooks";
 import { TIssue } from "../types";
 import { Select } from "@/components/select";
@@ -21,6 +21,7 @@ import { Modal } from "@/components/modal";
 import { Divider } from "@/components/elements";
 import { fromNow } from "@/utils/date";
 import Spinner from "@/components/elements/Spinner";
+import { useClickOutside } from "@/hooks";
 
 export const IssueDetails = () => {
   const issueId = useParams().issueId as string;
@@ -40,6 +41,7 @@ const LoadingIssue = () => {
 const Details = (props: { issue: TIssue; projectId: string }) => {
   const [issue, setIssue] = useState(props.issue);
   const navigate = useNavigate();
+  const ref = useRef<HTMLDivElement | null>(null);
   const { mutateAsync, isLoading } = useUpdateIssue(
     props.projectId,
     String(issue.id)
@@ -51,17 +53,22 @@ const Details = (props: { issue: TIssue; projectId: string }) => {
     mutateAsync(issue);
     navigate(-1);
   };
+  useClickOutside(ref, onClose);
   return (
     <div className="fixed inset-0 z-[1000] overflow-scroll bg-black/50 p-12">
-      <div className="mx-auto w-full max-w-[70rem] rounded-md bg-white p-6">
+      <div
+        ref={ref}
+        className="mx-auto w-full max-w-[70rem] rounded-md bg-white p-6"
+      >
         <Header
           {...pick(issue, "type", "id")}
           onClose={onClose}
           isLoading={isLoading}
+          update={updateIssue}
         />
         <div className="grid grid-cols-[60%_1fr] gap-10 py-8">
           <div>
-            <Summary summary={issue.summary} />
+            <Summary summary={issue.summary} update={updateIssue} />
             <Description description={issue.description} update={updateIssue} />
           </div>
           <div>
@@ -101,18 +108,34 @@ const Header = ({
   id,
   onClose,
   isLoading,
+  update,
 }: Pick<TIssue, "type" | "id"> & {
   onClose: () => void;
   isLoading: boolean;
+  update: (obj: Partial<TIssue>) => void;
 }) => {
   return (
     <div className="flex items-center gap-6">
-      <button className="flex items-center gap-2">
-        <TypeIcon type={type} />
-        <span className="text-sm uppercase text-slate-600">
-          {type}-{id}
-        </span>
-      </button>
+      <Select selected={type} onSelect={(type) => update({ type })}>
+        <Select.Button className="flex items-center gap-2">
+          <TypeIcon type={type} />
+          <span className="text-sm uppercase text-slate-600">
+            {type}-{id}
+          </span>
+        </Select.Button>
+        <Select.Dropdown>
+          {Object.values(IssueType).map((type) => (
+            <Select.Option
+              key={type}
+              value={type}
+              className="flex items-center gap-2"
+            >
+              <TypeIcon type={type} />
+              <span className="capitalize">{type}</span>
+            </Select.Option>
+          ))}
+        </Select.Dropdown>
+      </Select>
       <button className="ml-auto flex items-center gap-2 text-sm text-slate-700">
         <FiSend size={20} />
         <span>Give feedback</span>
@@ -135,19 +158,19 @@ const Header = ({
   );
 };
 
-const Summary = ({ summary }: { summary: string }) => {
-  const [text, setText] = useState(summary);
-
-  const handleChange = (ev: ChangeEvent<HTMLTextAreaElement>) => {
-    setText(ev.target.value.trim());
-  };
-
+const Summary = ({
+  summary,
+  update,
+}: {
+  summary: string;
+  update: (obj: Partial<TIssue>) => void;
+}) => {
   return (
     <textarea
-      value={text}
-      onChange={handleChange}
+      value={summary}
+      onChange={(ev) => update({ summary: ev.target.value })}
       placeholder="Short Summary"
-      className="h-8 resize-none text-2xl font-medium text-slate-800"
+      className="mb-5 h-8 resize-none text-2xl font-medium text-slate-800"
     />
   );
 };
@@ -268,7 +291,7 @@ const Assignees = ({
           })
         }
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {assignees.map((assignee) => {
             return (
               <span

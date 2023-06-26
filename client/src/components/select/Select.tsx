@@ -77,7 +77,7 @@ Select.Dropdown = function Dropdown({ children }: DropdownProps) {
   return (
     <div
       ref={ref}
-      className="absolute z-50 flex w-full flex-col bg-white shadow-md"
+      className="absolute z-50 mt-1 flex min-w-full flex-col bg-white shadow-md"
     >
       {children}
     </div>

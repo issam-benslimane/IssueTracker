@@ -51,7 +51,7 @@ Modal.Content = function Content(props: ContentProps) {
 
   if (!isOpen) return null;
   return (
-    <div className="fixed left-0 right-0 top-0 z-50 grid h-full w-full place-content-center overflow-y-auto overflow-x-hidden bg-black/70 p-4">
+    <div className="fixed left-0 right-0 top-0 z-50 grid h-screen w-screen place-content-center overflow-hidden bg-black/70 p-4">
       <ModalContentBase {...props} />
     </div>
   );
