@@ -25,3 +25,7 @@ export const updateIssue = async (
   );
   return response.data;
 };
+
+export const deleteIssue = async (projectId: string, issueId: string) => {
+  await axios.delete(`/projects/${projectId}/issues/${issueId}`);
+};

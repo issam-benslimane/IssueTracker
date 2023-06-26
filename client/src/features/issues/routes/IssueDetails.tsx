@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router";
 import { TextEditor } from "../components/TextEditor";
 import { IssuePriority, IssueStatus, IssueType } from "../constants";
 import { ChangeEvent, useRef, useState } from "react";
-import { useGetIssue, useUpdateIssue } from "../hooks";
+import { useDeleteIssue, useGetIssue, useUpdateIssue } from "../hooks";
 import { TIssue } from "../types";
 import { Select } from "@/components/select";
 import { IoIosArrowDown } from "react-icons/io";
@@ -42,15 +42,18 @@ const Details = (props: { issue: TIssue; projectId: string }) => {
   const [issue, setIssue] = useState(props.issue);
   const navigate = useNavigate();
   const ref = useRef<HTMLDivElement | null>(null);
-  const { mutateAsync, isLoading } = useUpdateIssue(
-    props.projectId,
-    String(issue.id)
-  );
+  const updateMutation = useUpdateIssue(props.projectId, String(issue.id));
+  const deleteMutation = useDeleteIssue(props.projectId, String(issue.id));
+
   const updateIssue = (updatedObj: Partial<TIssue>) => {
     setIssue({ ...issue, ...updatedObj });
   };
-  const onClose = () => {
-    mutateAsync(issue);
+  const onClose = async () => {
+    await updateMutation.mutateAsync(issue);
+    navigate(-1);
+  };
+  const onDelete = () => {
+    deleteMutation.mutate();
     navigate(-1);
   };
   useClickOutside(ref, onClose);
@@ -62,9 +65,10 @@ const Details = (props: { issue: TIssue; projectId: string }) => {
       >
         <Header
           {...pick(issue, "type", "id")}
-          onClose={onClose}
-          isLoading={isLoading}
+          isLoading={updateMutation.isLoading}
           update={updateIssue}
+          onClose={onClose}
+          onDelete={onDelete}
         />
         <div className="grid grid-cols-[60%_1fr] gap-10 py-8">
           <div>
@@ -109,10 +113,12 @@ const Header = ({
   onClose,
   isLoading,
   update,
+  onDelete,
 }: Pick<TIssue, "type" | "id"> & {
-  onClose: () => void;
   isLoading: boolean;
+  onClose: () => void;
   update: (obj: Partial<TIssue>) => void;
+  onDelete: () => void;
 }) => {
   return (
     <div className="flex items-center gap-6">
@@ -144,7 +150,7 @@ const Header = ({
         <HiLink size={20} />
         <span>Copy Link</span>
       </button>
-      <button className="text-slate-700">
+      <button className="text-slate-700" onClick={onDelete}>
         <RiDeleteBinLine size={20} />
       </button>
       <button
