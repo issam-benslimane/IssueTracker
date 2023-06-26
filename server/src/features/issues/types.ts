@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Issue, Prisma, User } from "@prisma/client";
 
 export type TIssueWhere = Prisma.IssueWhereInput;
 
@@ -8,6 +8,7 @@ export type TIssueCreate = Omit<Prisma.IssueUncheckedCreateInput, "status"> & {
   assigneesIds: number[];
 };
 
-export type TIssueUpdate = Prisma.IssueUncheckedUpdateInput & {
-  assigneesIds?: number[];
+export type TIssueUpdateDto = Partial<Issue> & {
+  assignees?: User[];
+  reporter?: User;
 };

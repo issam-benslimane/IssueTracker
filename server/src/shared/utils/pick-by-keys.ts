@@ -6,7 +6,7 @@ export function pick<T extends object, K extends keyof T>(
 ) {
   return keys.reduce((result, key) => {
     return { ...result, [key]: obj[key] };
-  }, {});
+  }, {} as Pick<T, K>);
 }
 
 export function omit<T extends object, K extends keyof T>(
@@ -14,5 +14,5 @@ export function omit<T extends object, K extends keyof T>(
   ...keys: K[]
 ) {
   const pickedKeys = objectKeys(obj).filter((key) => !keys.includes(key as K));
-  return pick(obj, ...pickedKeys);
+  return pick(obj, ...pickedKeys) as Omit<T, K>;
 }

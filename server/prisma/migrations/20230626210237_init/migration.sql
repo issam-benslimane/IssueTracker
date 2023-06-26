@@ -8,7 +8,7 @@ CREATE TYPE "IssueType" AS ENUM ('bug', 'story', 'task');
 CREATE TYPE "IssuePriority" AS ENUM ('highest', 'high', 'medium', 'low', 'lowest');
 
 -- CreateEnum
-CREATE TYPE "IssueStatus" AS ENUM ('backlog', 'selected', 'inProgress', 'done');
+CREATE TYPE "IssueStatus" AS ENUM ('backlog', 'selected_for_development', 'in_progress', 'done');
 
 -- CreateTable
 CREATE TABLE "User" (

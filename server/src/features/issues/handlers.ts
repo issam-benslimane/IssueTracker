@@ -42,7 +42,7 @@ const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body;
     const id = +req.params.id;
-    const issue = await issuesService.updateIssue({ id }, data);
+    const issue = await issuesService.updateIssue(id, data);
     res.status(200).json(issuesMapper.toJSON(issue));
   } catch (error) {
     next(error);

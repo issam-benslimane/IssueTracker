@@ -11,15 +11,10 @@ const getProject = async (where: TProjectWhereUnique) => {
     where,
     include: {
       lead: true,
-      users: {
-        select: {
-          user: true,
-        },
-      },
     },
   });
   if (!project) return null;
-  return { ...project, users: project.users.map((e) => e.user) };
+  return project;
 };
 
 const createProject = async (props: TProjectCreate) => {

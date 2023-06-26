@@ -1,11 +1,12 @@
 import db from "@/db";
 import {
   TIssueCreate,
-  TIssueUpdate,
+  TIssueUpdateDto,
   TIssueWhere,
   TIssueWhereUnique,
 } from "./types";
-import { IssueStatus } from "@prisma/client";
+import { IssueStatus, Prisma } from "@prisma/client";
+import { omit } from "@/shared/utils";
 
 const getIssues = async (where: TIssueWhere) => {
   const issues = await db.issue.findMany({
@@ -17,6 +18,9 @@ const getIssues = async (where: TIssueWhere) => {
           assignee: true,
         },
       },
+    },
+    orderBy: {
+      createdAt: "desc",
     },
   });
   return issues.map((issue) => ({
@@ -46,20 +50,26 @@ const createIssue = async ({ assigneesIds, ...props }: TIssueCreate) => {
   return issue;
 };
 
-const updateIssue = async (
-  where: TIssueWhereUnique,
-  { assigneesIds, ...props }: TIssueUpdate
-) => {
-  const data = props;
-  if (assigneesIds)
-    Object.assign(data, {
+const updateIssue = async (id: number, props: TIssueUpdateDto) => {
+  const query: Prisma.IssueUpdateArgs = {
+    where: { id },
+    data: omit(props, "assignees", "reporter"),
+  };
+  if (props.assignees)
+    Object.assign(query.data, {
       assignees: {
-        updateMany: {
-          data: assigneesIds.map((id) => ({ assigneeId: id })),
+        deleteMany: {},
+        createMany: {
+          data: props.assignees.map(({ id }) => ({ assigneeId: id })),
         },
       },
     });
-  const issue = await db.issue.update({ where, data });
+  if (props.reporter)
+    Object.assign(query.data, {
+      reporterId: props.reporter.id,
+    });
+
+  const issue = await db.issue.update(query);
   return issue;
 };
 

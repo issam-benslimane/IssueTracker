@@ -108,7 +108,7 @@ enum IssuePriority {
 
 enum IssueStatus {
   backlog
-  selected
-  inProgress
+  selected_for_development
+  in_progress
   done
 }
