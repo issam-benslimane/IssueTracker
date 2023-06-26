@@ -28,7 +28,12 @@ const Assignees = ({ assignees }: { assignees: TUser[] }) => {
   return (
     <div className="flex flex-row-reverse">
       {assignees.map(({ id, avatarUrl }) => (
-        <Avatar key={id} size="sm" avatarUrl={avatarUrl} />
+        <Avatar
+          key={id}
+          size="sm"
+          avatarUrl={avatarUrl}
+          className="ring-2 ring-white"
+        />
       ))}
     </div>
   );

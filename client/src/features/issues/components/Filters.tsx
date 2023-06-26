@@ -1,8 +1,8 @@
-import { Avatar, TUser } from "@/features/users";
+import { Avatar, useUsers } from "@/features/users";
 import { FiSearch } from "react-icons/fi";
 import clsx from "clsx";
 import { FilterState } from "../hooks";
-import { useProject } from "@/features/projects";
+import { useParams } from "react-router";
 
 type FiltersProps = {
   filters: FilterState;
@@ -17,7 +17,8 @@ export const Filters = ({
   areFiltersClear,
   clearFilters,
 }: FiltersProps) => {
-  const { users } = useProject();
+  const projectId = useParams().projectId as string;
+  const { data: users } = useUsers({ projectId });
   return (
     <div className="my-8 flex items-center gap-4">
       <div className="grid grid-cols-[auto_1fr] items-center">
@@ -33,7 +34,7 @@ export const Filters = ({
       </div>
 
       <div className="flex flex-row-reverse">
-        {users.map(({ id, avatarUrl }) => (
+        {users?.map(({ id, avatarUrl }) => (
           <button
             key={id}
             onClick={() =>
@@ -44,7 +45,11 @@ export const Filters = ({
               filters.users.includes(id) && "ring-4 ring-blue-700"
             )}
           >
-            <Avatar size="md" avatarUrl={avatarUrl} />
+            <Avatar
+              size="md"
+              avatarUrl={avatarUrl}
+              className="ring-2 ring-white"
+            />
           </button>
         ))}
       </div>

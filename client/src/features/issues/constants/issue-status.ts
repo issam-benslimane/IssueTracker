@@ -1,6 +1,6 @@
 export enum IssueStatus {
-  BACKLOG = "backlog",
-  SELECTED = "selected",
-  INPROGRESS = "inProgress",
-  DONE = "done",
+  backlog = "backlog",
+  selected = "selected for development",
+  inProgress = "in progress",
+  done = "done",
 }

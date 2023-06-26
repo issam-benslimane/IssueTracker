@@ -4,3 +4,8 @@ export type TUser = {
   email: string;
   avatarUrl: string;
 };
+
+export type UserParams = {
+  projectId?: string;
+  issueId?: string;
+};

@@ -1,3 +1,4 @@
-export * from "./useIssues";
-export * from "./useIssue";
+export * from "./useGetIssue";
+export * from "./useGetIssues";
 export * from "./useFilters";
+export * from "./useUpdateIssue";

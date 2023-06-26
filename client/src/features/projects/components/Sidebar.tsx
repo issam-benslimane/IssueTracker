@@ -1,10 +1,11 @@
 import { ProjectIcon } from "./ProjectIcon";
 import { BsKanban } from "react-icons/bs";
 import { FiSettings } from "react-icons/fi";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import clsx from "clsx";
 
 export const Sidebar = () => {
+  const projectId = useParams().projectId as string;
   return (
     <div className="h-screen bg-slate-100 px-5 py-6">
       <div className="mb-8 flex items-center gap-x-2">
@@ -15,11 +16,11 @@ export const Sidebar = () => {
         </div>
       </div>
       <nav>
-        <NavItem to="/projects/board">
+        <NavItem to={`/projects/${projectId}/board`}>
           <BsKanban size={20} />
           <p>Kanban Board</p>
         </NavItem>
-        <NavItem to="/projects/settings">
+        <NavItem to={`/projects/${projectId}/settings`}>
           <FiSettings size={20} />
           <p>Project Settings</p>
         </NavItem>

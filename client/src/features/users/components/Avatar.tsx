@@ -3,6 +3,7 @@ import clsx from "clsx";
 export type AvatarProps = {
   avatarUrl: string;
   size: keyof typeof sizes;
+  className?: string;
 };
 
 const sizes = {
@@ -11,12 +12,12 @@ const sizes = {
   lg: "w-12",
 };
 
-export const Avatar = ({ avatarUrl, size }: AvatarProps) => {
+export const Avatar = ({ avatarUrl, size, className }: AvatarProps) => {
   return (
     <img
       src={avatarUrl}
       alt=""
-      className={clsx("rounded-full ring-2 ring-white", sizes[size])}
+      className={clsx("rounded-full", className, sizes[size])}
     />
   );
 };
