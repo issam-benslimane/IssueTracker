@@ -1,10 +1,10 @@
 const KEY = "JIRA.TOKEN";
 
-export const storage = Object.defineProperty(Object.create(null), "token", {
-  get() {
+export const storage = {
+  getToken() {
     return window.localStorage.getItem(KEY);
   },
-  set(v: string) {
-    window.localStorage.setItem(KEY, v);
+  setToken(token: string) {
+    window.localStorage.setItem(KEY, token);
   },
-});
+};
