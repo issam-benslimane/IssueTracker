@@ -34,15 +34,18 @@ const getIssue = async (where: TIssueWhereUnique) => {
   return issue;
 };
 
-const createIssue = async ({ assigneesIds, ...props }: TIssueCreate) => {
+const createIssue = async (props: TIssueCreate) => {
   const status = IssueStatus.backlog;
+  const { assignees, reporter, projectId, ...data } = props;
   const issue = await db.issue.create({
     data: {
-      ...props,
+      ...data,
       status,
+      projectId: +projectId,
+      reporterId: reporter?.id,
       assignees: {
         createMany: {
-          data: assigneesIds.map((id) => ({ assigneeId: id })),
+          data: assignees.map(({ id }) => ({ assigneeId: id })),
         },
       },
     },

@@ -6,7 +6,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router";
 import { TextEditor } from "../components/TextEditor";
 import { IssuePriority, IssueStatus, IssueType } from "../constants";
-import { ChangeEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useDeleteIssue, useGetIssue, useUpdateIssue } from "../hooks";
 import { TIssue } from "../types";
 import { Select } from "@/components/select";
@@ -206,7 +206,7 @@ const Description = ({
       <p className="mb-2 text-sm font-medium text-slate-800">Description:</p>
       {isEditing ? (
         <>
-          <TextEditor text={text} setText={setText} />
+          <TextEditor text={text} setText={(text) => setText(text)} />
           <div className="mt-3 flex gap-1">
             <button
               onClick={onSave}

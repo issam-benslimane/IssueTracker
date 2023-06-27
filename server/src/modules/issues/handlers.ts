@@ -25,11 +25,9 @@ const getIssue = async (req: Request, res: Response, next: NextFunction) => {
 const createIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body;
-    const reporterId = +req.user.id;
     const projectId = +req.params.projectId;
     const issue = await issuesService.createIssue({
       ...data,
-      reporterId,
       projectId,
     });
     res.status(201).json(issuesMapper.toJSON(issue));

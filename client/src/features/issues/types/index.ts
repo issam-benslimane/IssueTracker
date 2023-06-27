@@ -20,3 +20,12 @@ export type TIssue = {
   reporter: TUser;
   assignees: TUser[];
 };
+
+export type CreateIssueDto = {
+  type: IssueType;
+  summary: string;
+  description: string;
+  priority: IssuePriority;
+  reporter: TUser;
+  assignees: TUser[];
+};

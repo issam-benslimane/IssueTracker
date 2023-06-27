@@ -4,7 +4,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 type TextEditorProps = {
   text?: string;
-  setText: Dispatch<SetStateAction<string>>;
+  setText: (text: string) => void;
 };
 
 export const TextEditor = ({ text, setText }: TextEditorProps) => {
@@ -21,5 +21,10 @@ export const TextEditor = ({ text, setText }: TextEditorProps) => {
     quill.on("text-change", () => setText(quill.root.innerHTML));
   }, []);
 
-  return <div ref={wrapperRef}></div>;
+  return (
+    <div
+      ref={wrapperRef}
+      className="flex min-h-[10rem] flex-col rounded-md [&>.ql-container>.ql-editor]:outline-none [&>.ql-container]:flex-1"
+    ></div>
+  );
 };
