@@ -6,7 +6,9 @@ import { useParams } from "react-router";
 
 type FiltersProps = {
   filters: FilterState;
-  updateFilters: (filter: FilterState) => void;
+  updateFilters: <K extends keyof FilterState>(
+    filter: Pick<FilterState, K>
+  ) => void;
   areFiltersClear: () => boolean;
   clearFilters: () => void;
 };
@@ -19,6 +21,7 @@ export const Filters = ({
 }: FiltersProps) => {
   const projectId = useParams().projectId as string;
   const { data: users } = useUsers({ projectId });
+
   return (
     <div className="my-8 flex items-center gap-4">
       <div className="grid grid-cols-[auto_1fr] items-center">
@@ -26,9 +29,7 @@ export const Filters = ({
         <input
           type="text"
           value={filters.search}
-          onChange={(ev) =>
-            updateFilters({ ...filters, search: ev.target.value.trim() })
-          }
+          onChange={(ev) => updateFilters({ search: ev.target.value })}
           className="col-start-1 col-end-3 row-start-1 row-end-1 w-40 rounded-sm border border-slate-300 bg-slate-100 p-1 pl-8 text-sm text-slate-800"
         />
       </div>
@@ -37,9 +38,7 @@ export const Filters = ({
         {users?.map(({ id, avatarUrl }) => (
           <button
             key={id}
-            onClick={() =>
-              updateFilters({ ...filters, users: filters.users.concat(id) })
-            }
+            onClick={() => updateFilters({ users: filters.users.concat(id) })}
             className={clsx(
               "rounded-full transition-transform hover:-translate-y-1",
               filters.users.includes(id) && "ring-4 ring-blue-700"
@@ -54,16 +53,16 @@ export const Filters = ({
         ))}
       </div>
 
-      <button className="rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100">
+      <button
+        onClick={() => updateFilters({ myIssue: !filters.myIssue })}
+        className="rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100"
+      >
         Only My Issues
       </button>
 
       <button
         onClick={() =>
-          updateFilters({
-            ...filters,
-            recentlyUpdated: !filters.recentlyUpdated,
-          })
+          updateFilters({ recentlyUpdated: !filters.recentlyUpdated })
         }
         className={clsx(
           "rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100",

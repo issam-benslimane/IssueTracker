@@ -18,13 +18,16 @@ const initialFilters: FilterState = {
 export const useFilters = () => {
   const [filters, setFilters] = useState(initialFilters);
 
-  const updateFilters = (filters: FilterState) => {
-    const newFilters = keys(filters).reduce((final, key) => {
-      if (key === "search") final[key] = filters[key].trim();
-      else if (key === "users") final[key] = removeDuplicates(filters[key]);
-      else final[key] = filters[key];
-      return final;
-    }, {} as FilterState);
+  const updateFilters = <K extends keyof FilterState>(
+    filter: Pick<FilterState, K>
+  ) => {
+    const newFilters = keys(filter).reduce((final, key) => {
+      if (key === "search") return { ...final, [key]: filter[key].trim() };
+      else if (key === "users")
+        return { ...final, [key]: removeDuplicates(filter[key]) };
+      return { ...final, [key]: filter[key] };
+    }, filters);
+    console.log(newFilters);
     setFilters(newFilters);
   };
 
