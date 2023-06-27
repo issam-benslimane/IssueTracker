@@ -1,9 +1,10 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { LoginStrategy, TLogin, TRegister } from "./types";
-import { BadRequestError, UnauthorizedError } from "@/shared/utils";
-import { env } from "@/config";
-import { usersService } from "../users";
+import { BadRequestError, UnauthorizedError } from "../common/utils";
+import { env } from "../../config";
+import { usersService } from "../users/service";
+import { User } from "@prisma/client";
 
 const jwtSecret = env.jwt.secret;
 
@@ -26,12 +27,12 @@ const signup = async (data: TRegister) => {
 };
 
 const loginAsGuest = async () => {
-  let guestUsers = await usersService.getUsers({
-    email: { endsWith: "guest" },
-  });
+  const guestUser = (await usersService.getUser({
+    email: "rick@jira.guest",
+  })) as User;
   return {
-    token: jwt.sign(guestUsers[0].email, jwtSecret),
-    user: guestUsers[0],
+    token: jwt.sign(guestUser.email, jwtSecret),
+    user: guestUser,
   };
 };
 

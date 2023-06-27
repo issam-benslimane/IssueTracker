@@ -1,7 +1,7 @@
-import { BadRequestError } from "@/shared/utils";
-import db from "@/db";
+import db from "../../db";
 import { UserParams } from "./types";
 import { Prisma } from "@prisma/client";
+import { BadRequestError } from "../common/utils";
 
 const getUsers = async (params: UserParams = {}) => {
   const baseQuery: Prisma.UserFindManyArgs = { where: {} };

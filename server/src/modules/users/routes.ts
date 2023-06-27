@@ -1,4 +1,4 @@
-import { authenticate } from "@/shared/middlewares";
+import { authenticate } from "../common/middlewares";
 import { usersController } from "./handlers";
 import { Router } from "express";
 

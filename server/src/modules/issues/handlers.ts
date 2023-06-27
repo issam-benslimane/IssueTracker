@@ -41,7 +41,7 @@ const createIssue = async (req: Request, res: Response, next: NextFunction) => {
 const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const data = req.body;
-    const id = +req.params.id;
+    const id = req.params.id;
     const issue = await issuesService.updateIssue(id, data);
     res.status(200).json(issuesMapper.toJSON(issue));
   } catch (error) {
@@ -51,8 +51,8 @@ const updateIssue = async (req: Request, res: Response, next: NextFunction) => {
 
 const deleteIssue = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = +req.params.id;
-    await issuesService.deleteIssue({ id });
+    const id = req.params.id;
+    await issuesService.deleteIssue(id);
     res.status(204).end();
   } catch (error) {
     next(error);

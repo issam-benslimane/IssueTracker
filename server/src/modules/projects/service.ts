@@ -1,4 +1,4 @@
-import db from "@/db";
+import db from "../../db";
 import { TProjectCreate, TProjectUpdate, TProjectWhereUnique } from "./types";
 
 const getProjects = async () => {

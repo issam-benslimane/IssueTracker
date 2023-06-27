@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "../utils";
-import { authService } from "@/features/auth";
+import { authService } from "../../auth/service";
 
-export const authenticate = async (
+export async function authenticate(
   req: Request,
   _res: Response,
   next: NextFunction
-) => {
+) {
   try {
     const authHeader = req.header("authorization");
     if (authHeader) {
@@ -16,8 +16,8 @@ export const authenticate = async (
         return next();
       }
     }
-    next(new UnauthorizedError("Please authenticate!"));
+    next(new UnauthorizedError("Authentication required!"));
   } catch (error) {
     next(error);
   }
-};
+}

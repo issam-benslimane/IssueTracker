@@ -1,4 +1,4 @@
-import db from "@/db";
+import db from "../../db";
 import {
   TIssueCreate,
   TIssueUpdateDto,
@@ -6,7 +6,7 @@ import {
   TIssueWhereUnique,
 } from "./types";
 import { IssueStatus, Prisma } from "@prisma/client";
-import { omit } from "@/shared/utils";
+import { omit } from "../common/utils";
 
 const getIssues = async (where: TIssueWhere) => {
   const issues = await db.issue.findMany({
@@ -50,9 +50,9 @@ const createIssue = async ({ assigneesIds, ...props }: TIssueCreate) => {
   return issue;
 };
 
-const updateIssue = async (id: number, props: TIssueUpdateDto) => {
+const updateIssue = async (id: string, props: TIssueUpdateDto) => {
   const query: Prisma.IssueUpdateArgs = {
-    where: { id },
+    where: { id: +id },
     data: omit(props, "assignees", "reporter"),
   };
   if (props.assignees)
@@ -73,8 +73,8 @@ const updateIssue = async (id: number, props: TIssueUpdateDto) => {
   return issue;
 };
 
-const deleteIssue = async (where: TIssueWhereUnique) => {
-  await db.issue.delete({ where });
+const deleteIssue = async (id: string) => {
+  await db.issue.delete({ where: { id: +id } });
 };
 
 export const issuesService = {

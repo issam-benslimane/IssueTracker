@@ -24,4 +24,17 @@ const signup = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const authController = { login, signup };
+const getAuthenticatedUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const user = req.user;
+    res.status(200).send(usersMapper.toJSON(user));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const authController = { login, signup, getAuthenticatedUser };
