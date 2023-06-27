@@ -27,7 +27,6 @@ export const useFilters = () => {
         return { ...final, [key]: removeDuplicates(filter[key]) };
       return { ...final, [key]: filter[key] };
     }, filters);
-    console.log(newFilters);
     setFilters(newFilters);
   };
 

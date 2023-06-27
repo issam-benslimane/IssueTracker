@@ -3,19 +3,16 @@ import { TIssue } from "../types";
 import { Filters } from "./Filters";
 import { keys } from "@/utils/object-keys";
 import { KanbanCol } from "./KanbanCol";
-import { TUser } from "@/features/users";
 import { FilterState, useFilters, useGetIssues } from "../hooks";
 import { useParams } from "react-router";
-
-type KanbanProps = {
-  projectId: number;
-  users: TUser[];
-};
+import { useAuth } from "@/features/auth";
+import { TUser } from "@/features/users";
 
 export const Kanban = () => {
   const projectId = useParams().projectId as string;
   const { data: issues, status } = useGetIssues(projectId);
   const { filters, ...methods } = useFilters();
+  const { currentUser } = useAuth();
 
   if (status !== "success") return null;
 
@@ -27,7 +24,7 @@ export const Kanban = () => {
           .map((status) => ({
             status: IssueStatus[status],
             issues: filterByStatus(
-              filterIssues(issues, filters),
+              filterIssues(issues, filters, currentUser as TUser),
               IssueStatus[status]
             ),
           }))
@@ -39,7 +36,7 @@ export const Kanban = () => {
   );
 };
 
-function filterIssues(issues: TIssue[], filters: FilterState) {
+function filterIssues(issues: TIssue[], filters: FilterState, user: TUser) {
   return issues.filter((issue) => {
     return keys(filters).every((key) => {
       if (key === "search") return issue.summary.includes(filters[key]);
@@ -47,6 +44,8 @@ function filterIssues(issues: TIssue[], filters: FilterState) {
         return issue.assignees.find((assignee) =>
           filters[key].includes(assignee.id)
         );
+      else if (key === "myIssue" && filters[key])
+        return issue.assignees.find((assignee) => assignee.id === user.id);
       else if (key === "recentlyUpdated" && filters[key]) {
         const onDayAgo = Date.now() - 1000 * 60 * 60 * 24;
         return new Date(onDayAgo) < new Date(issue.updatedAt);

@@ -55,7 +55,11 @@ export const Filters = ({
 
       <button
         onClick={() => updateFilters({ myIssue: !filters.myIssue })}
-        className="rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100"
+        className={clsx(
+          "rounded-md px-3 py-2 text-sm transition-colors",
+          !filters.myIssue && "text-slate-600 hover:bg-slate-100",
+          filters.myIssue && "bg-blue-100 text-blue-800"
+        )}
       >
         Only My Issues
       </button>
@@ -65,9 +69,9 @@ export const Filters = ({
           updateFilters({ recentlyUpdated: !filters.recentlyUpdated })
         }
         className={clsx(
-          "rounded-md px-3 py-2 text-sm text-slate-600 transition-colors hover:bg-slate-100",
-          filters.recentlyUpdated &&
-            "bg-blue-100 text-blue-800 hover:bg-blue-100"
+          "rounded-md px-3 py-2 text-sm transition-colors",
+          !filters.recentlyUpdated && "text-slate-600 hover:bg-slate-100",
+          filters.recentlyUpdated && "bg-blue-100 text-blue-800"
         )}
       >
         Recently Updated
