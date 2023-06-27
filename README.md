@@ -1,4 +1,3 @@
 # IssueTracker
 
-https://github.com/issam-benslimane/IssueTracker/assets/103425259/f3c20c05-912c-4f0c-be18-c58e332ae524
-
+![ezgif com-video-to-gif](https://github.com/issam-benslimane/IssueTracker/assets/103425259/05b8ccca-530a-4a99-a628-a0d192311d76)
