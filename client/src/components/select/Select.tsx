@@ -1,6 +1,7 @@
 import { useClickOutside } from "@/hooks";
 import clsx from "clsx";
 import React, {
+  ButtonHTMLAttributes,
   HTMLAttributes,
   createContext,
   useContext,
@@ -14,11 +15,11 @@ type SelectProps = {
   onSelect: (v: any) => void;
 };
 
-type OptionProps = HTMLAttributes<HTMLButtonElement> & {
+type OptionProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   value: string;
 };
 
-type ButtonProps = HTMLAttributes<HTMLButtonElement>;
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
 type DropdownProps = HTMLAttributes<HTMLDivElement>;
 
@@ -52,15 +53,21 @@ export const Select = ({ children, selected, onSelect }: SelectProps) => {
   );
 };
 
-Select.Button = function Button({ children, className }: ButtonProps) {
+Select.Button = function Button({
+  children,
+  className,
+  ...props
+}: ButtonProps) {
   const { toggle } = useSelect();
   const handleClick = () => {
     toggle();
   };
   return (
     <button
+      type="button"
       onClick={handleClick}
       className={clsx("flex items-center gap-2 rounded-md", className)}
+      {...props}
     >
       {children}
     </button>

@@ -24,7 +24,7 @@ export const TextEditor = ({ text, setText }: TextEditorProps) => {
   return (
     <div
       ref={wrapperRef}
-      className="flex min-h-[10rem] flex-col rounded-md [&>.ql-container>.ql-editor]:outline-none [&>.ql-container]:flex-1"
+      className="flex flex-col rounded-md [&>.ql-container>.ql-editor]:min-h-[10rem]"
     ></div>
   );
 };

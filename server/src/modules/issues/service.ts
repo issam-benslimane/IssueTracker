@@ -20,7 +20,7 @@ const getIssues = async (where: TIssueWhere) => {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      priority: "asc",
     },
   });
   return issues.map((issue) => ({
