@@ -1,4 +1,4 @@
-package com.jira.api.auth.services;
+package com.jira.api.auth.core;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,6 @@ import java.util.Map;
 public class JwtService {
     @Value("${jwt.signing.key}")
     private String signingKey;
-    private Claims claims = null;
 
     public String generateToken(Map<String, ?> payload){
         SecretKey key = Keys.hmacShaKeyFor(signingKey.getBytes(StandardCharsets.UTF_8));
@@ -24,17 +23,12 @@ public class JwtService {
                 .compact();
     }
 
-    public void parseToken(String token){
+    public Map<String, Object> parseToken(String token){
         SecretKey key = Keys.hmacShaKeyFor(signingKey.getBytes(StandardCharsets.UTF_8));
-        claims = Jwts.parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    public Object get(String k){
-        if (k == null) throw new RuntimeException("Please provide a key.");
-        return claims.get(k);
     }
 }

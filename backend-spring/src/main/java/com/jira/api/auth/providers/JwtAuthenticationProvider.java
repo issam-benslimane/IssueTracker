@@ -1,6 +1,5 @@
 package com.jira.api.auth.providers;
 
-import com.jira.api.auth.services.JwtService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

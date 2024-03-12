@@ -1,6 +1,6 @@
 package com.jira.api.auth.filters;
 
-import com.jira.api.auth.services.JwtService;
+import com.jira.api.auth.core.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private AuthenticationManager authenticationManager;
@@ -34,15 +35,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         this.logger.info("Token provided: " + token);
-        jwtService.parseToken(token);
-        String principal = String.valueOf(jwtService.get("principal"));
+        Map<String, Object> claims = jwtService.parseToken(token);
+        String principal = String.valueOf(claims.get("principal"));
         this.logger.info("Trying to authenticate with: " + principal);
         Authentication authRequest = new UsernamePasswordAuthenticationToken(principal, null);
         try {
             Authentication authResult = authenticationManager.authenticate(authRequest);
+            this.logger.info("Principal found with roles: " + authResult.getAuthorities());
             SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
             context.setAuthentication(authResult);
-            this.logger.info("Principal found with roles: " + authResult.getAuthorities());
             this.securityContextHolderStrategy.setContext(context);
         } catch (AuthenticationException e){
             this.securityContextHolderStrategy.clearContext();
